@@ -70,7 +70,8 @@ gulp.task('createHomepage', () =>
       starttag: '<!-- inject:links -->',
       base: './',
       transform: (filepath, file) => {
-        const matchedTitle = file.contents.toString('utf8').match(/<title>(\w+)<\/title>/i)
+        const singlePageDoc = file.contents.toString('utf8')
+        const matchedTitle = singlePageDoc.match(/<title>(.+)<\/title>/i)
         const title = matchedTitle ? matchedTitle[1] : filepath
         return `<li><a href="${filepath}">${title}</a></li>`
       }
