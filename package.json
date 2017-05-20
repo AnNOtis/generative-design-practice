@@ -5,8 +5,9 @@
   "license": "MIT",
   "scripts": {
     "test": "xo",
-    "build": "gulp",
-    "watch": "gulp & gulp watch",
+    "clean": "rimraf dist",
+    "build": "yarn run clean && gulp",
+    "dev": "yarn run build && gulp watch",
     "start": "serve dist"
   },
   "devDependencies": {
@@ -17,6 +18,7 @@
     "gulp-insert": "^0.5.0",
     "gulp-sass": "^3.1.0",
     "merge-stream": "^1.0.1",
+    "rimraf": "^2.6.1",
     "serve": "^5.1.5",
     "xo": "^0.18.2"
   },
