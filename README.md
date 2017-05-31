@@ -6,7 +6,7 @@ A playground integrates with [p5.js]. It is aim at practicing and experimenting 
 [Generative Design]: http://www.generative-gestaltung.de/
 
 ## Usage
-It generates homepage with links to particular pages by folders under `/src`. Also, assets including `css`, `sass` and `js(ES6 by babel)` under the folders will automatically inject to the final page.
+It generates a homepage with links to particular pages by folders under `/src`. Also, assets including `css`, `sass` and `js(ES6 by babel)` under the folders will automatically inject to the final page.
 
 ## Command Line
 
