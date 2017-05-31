@@ -6,11 +6,14 @@ const sass = require('gulp-sass')
 const inject = require('gulp-inject')
 const insert = require('gulp-insert')
 const merge = require('merge-stream')
+const concat = require('gulp-concat')
 
 const SRC_PATH = 'src'
 const DIST_PATH = 'dist'
-const JS_PATH = 'src/**/*.js'
-const SASS_PATH = 'src/**/*.sass'
+const COMMON_SASS_PATH = ['common/css/**/*.sass']
+const COMMON_JS_PATH = ['common/js/p5/p5.js']
+const PAGE_JS_PATH = 'src/**/*.js'
+const PAGE_SASS_PATH = 'src/**/*.sass'
 const PAGES_GLOB = path.join(SRC_PATH, '**/index.html')
 
 // Get target chapter folders recursively
@@ -23,14 +26,27 @@ const getFolders = dir => {
   return [].concat.apply(dirs, dirs.map(getFolders)).sort()
 }
 
-gulp.task('js', () =>
-  gulp.src(JS_PATH, {base: './'})
+gulp.task('common_sass', () =>
+  gulp.src(COMMON_SASS_PATH)
+    .pipe(sass())
+    .pipe(concat('common.css'))
+    .pipe(gulp.dest(DIST_PATH))
+)
+
+gulp.task('common_js', () =>
+  gulp.src(COMMON_JS_PATH)
+    .pipe(concat('common.js'))
+    .pipe(gulp.dest(DIST_PATH))
+)
+
+gulp.task('page_js', () =>
+  gulp.src(PAGE_JS_PATH, {base: './'})
     .pipe(babel({presets: ['env']}))
     .pipe(gulp.dest(DIST_PATH))
 )
 
-gulp.task('sass', () =>
-  gulp.src(SASS_PATH, {base: './'})
+gulp.task('page_sass', () =>
+  gulp.src(PAGE_SASS_PATH, {base: './'})
       .pipe(sass().on('error', sass.logError))
       .pipe(gulp.dest(DIST_PATH))
 )
@@ -47,22 +63,32 @@ gulp.task('injectAssetsToPage', () => {
 
         return (
           contents.slice(0, endHead) +
-          '<!-- inject:css -->\n<!-- endinject -->\n' +
+          htmlStyleSheetTag('/common.css') +
+          '\n<!-- inject:css -->\n<!-- endinject -->\n' +
           contents.slice(endHead, endBody) +
-          '<!-- inject:js -->\n<!-- endinject -->\n' +
+          htmlJsTag('/common.js') +
+          '\n<!-- inject:js -->\n<!-- endinject -->\n' +
           contents.slice(endBody)
         )
       }))
       .pipe(inject(jsSources))
       .pipe(inject(cssSources, {
         starttag: '<!-- inject:css -->',
-        transform: filepath => `<link rel="stylesheet" href="${filepath.replace('.sass', '.css')}">`
+        transform: filepath => htmlStyleSheetTag(filepath.replace('.sass', '.css'))
       }))
       .pipe(gulp.dest(DIST_PATH))
   })
 
   return merge(pages)
 })
+
+function htmlStyleSheetTag(path) {
+  return `<link rel="stylesheet" href="${path}">`
+}
+
+function htmlJsTag(path) {
+  return `<script src="${path}"></script>`
+}
 
 gulp.task('createHomepage', () =>
   gulp.src('index.html')
@@ -79,10 +105,12 @@ gulp.task('createHomepage', () =>
     .pipe(gulp.dest(DIST_PATH))
 )
 
-gulp.task('build', ['js', 'sass'])
+gulp.task('build', ['page_js', 'page_sass', 'common_sass', 'common_js'])
 gulp.task('watch', () => {
-  gulp.watch(JS_PATH, ['js'])
-  gulp.watch(SASS_PATH, ['sass'])
+  gulp.watch(PAGE_JS_PATH, ['page_js'])
+  gulp.watch(PAGE_SASS_PATH, ['page_sass'])
+  gulp.watch(COMMON_SASS_PATH, ['common_sass'])
+  gulp.watch(COMMON_JS_PATH, ['common_js'])
   gulp.watch(PAGES_GLOB, ['createHomepage', 'injectAssetsToPage'])
 })
 
