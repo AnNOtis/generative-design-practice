@@ -28,7 +28,6 @@
     "space": 2,
     "rules": {
       "no-else-return": 0
-    },
-    "globals": ["p5"]
+    }
   }
 }
