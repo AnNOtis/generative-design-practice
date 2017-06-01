@@ -8,8 +8,8 @@ const insert = require('gulp-insert')
 const merge = require('merge-stream')
 const concat = require('gulp-concat')
 
-const SRC_PATH = 'src'
-const DIST_PATH = 'dist'
+const SRC_PATH = path.join(__dirname, 'src')
+const DIST_PATH = path.join(__dirname, 'dist')
 const COMMON_SASS_PATH = ['common/css/**/*.sass']
 const COMMON_JS_PATH = ['common/js/p5/p5.js']
 const PAGE_JS_PATH = 'src/**/*.js'
@@ -40,39 +40,42 @@ gulp.task('common_js', () =>
 )
 
 gulp.task('page_js', () =>
-  gulp.src(PAGE_JS_PATH, {base: './'})
+  gulp.src(PAGE_JS_PATH, {base: SRC_PATH})
     .pipe(babel({presets: ['env']}))
     .pipe(gulp.dest(DIST_PATH))
 )
 
 gulp.task('page_sass', () =>
-  gulp.src(PAGE_SASS_PATH, {base: './'})
+  gulp.src(PAGE_SASS_PATH, {base: SRC_PATH})
       .pipe(sass().on('error', sass.logError))
       .pipe(gulp.dest(DIST_PATH))
 )
 
 gulp.task('injectAssetsToPage', () => {
   const pages = getFolders(SRC_PATH).map(dir => {
-    const jsSources = gulp.src(path.join(dir, '*.js'), {read: false})
+    const jsSources = gulp.src( path.join(dir, '*.js'), {read: false})
     const cssSources = gulp.src(path.join(dir, '*.+(sass|css)'), {read: false})
 
-    return gulp.src(path.join(dir, 'index.html'), {base: './'})
+    const pathFromRoot = path.relative(dir, SRC_PATH)
+
+    return gulp.src(path.join(dir, 'index.html'), {base: SRC_PATH})
       .pipe(insert.transform(contents => {
         const endHead = contents.indexOf('</head>')
         const endBody = contents.indexOf('</body>')
 
         return (
           contents.slice(0, endHead) +
-          htmlStyleSheetTag('/common.css') +
+          htmlStyleSheetTag(path.join(pathFromRoot, 'common.css')) +
           '\n<!-- inject:css -->\n<!-- endinject -->\n' +
           contents.slice(endHead, endBody) +
-          htmlJsTag('/common.js') +
+          htmlJsTag(path.join(pathFromRoot, 'common.js')) +
           '\n<!-- inject:js -->\n<!-- endinject -->\n' +
           contents.slice(endBody)
         )
       }))
-      .pipe(inject(jsSources))
+      .pipe(inject(jsSources, {relative: true}))
       .pipe(inject(cssSources, {
+        relative: true,
         starttag: '<!-- inject:css -->',
         transform: filepath => htmlStyleSheetTag(filepath.replace('.sass', '.css'))
       }))
@@ -93,13 +96,14 @@ function htmlJsTag(path) {
 gulp.task('createHomepage', () =>
   gulp.src('index.html')
     .pipe(inject(gulp.src(PAGES_GLOB), {
+      ignorePath: 'src',
       starttag: '<!-- inject:links -->',
-      base: './',
+      base: SRC_PATH,
       transform: (filepath, file) => {
         const singlePageDoc = file.contents.toString('utf8')
         const matchedTitle = singlePageDoc.match(/<title>(.+)<\/title>/i)
         const title = matchedTitle ? matchedTitle[1] : filepath
-        return `<li><a href="${filepath}">${title}</a></li>`
+        return `<li><a href="${filepath.slice(1)}">${title}</a></li>`
       }
     }))
     .pipe(gulp.dest(DIST_PATH))
