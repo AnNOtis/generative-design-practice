@@ -116,7 +116,7 @@ gulp.task('copy', () => gulp.src('CNAME').pipe(gulp.dest(DIST_PATH)))
 
 gulp.task('build', ['page_js', 'page_sass', 'common_sass', 'common_js'])
 gulp.task('watch', () => {
-  const assetChangedConfig = {read: false, readDelay: 500, event: ['change']}
+  const assetChangedConfig = {readDelay: 200, event: ['change']}
   const assetAddedDeletedConfig = {read: false, readDelay: 500, event: ['add', 'unlink']}
   const pageChangedConfig = {read: false, readDelay: 500, event: ['add', 'unlink', 'change']}
 

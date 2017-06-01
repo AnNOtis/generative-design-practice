@@ -32,5 +32,6 @@
     "rules": {
       "no-else-return": 0
     }
-  }
+  },
+  "dependencies": {}
 }
