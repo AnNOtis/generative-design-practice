@@ -8,10 +8,12 @@
     "clean": "rimraf dist",
     "build": "yarn run clean && gulp",
     "dev": "yarn run build && gulp watch",
-    "start": "serve dist"
+    "start": "serve dist",
+    "deploy": "yarn run build && gh-pages -d dist"
   },
   "devDependencies": {
     "babel-preset-env": "^1.4.0",
+    "gh-pages": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
