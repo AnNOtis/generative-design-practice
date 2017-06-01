@@ -7,6 +7,8 @@ const inject = require('gulp-inject')
 const insert = require('gulp-insert')
 const merge = require('merge-stream')
 const concat = require('gulp-concat')
+const watch = require('gulp-watch')
+const batch = require('gulp-batch')
 
 const SRC_PATH = path.join(__dirname, 'src')
 const DIST_PATH = path.join(__dirname, 'dist')
@@ -14,6 +16,7 @@ const COMMON_SASS_PATH = ['common/css/**/*.sass']
 const COMMON_JS_PATH = ['common/js/p5/p5.js']
 const PAGE_JS_PATH = 'src/**/*.js'
 const PAGE_SASS_PATH = 'src/**/*.sass'
+const ALL_ASSETS_PATH = 'src/**/*.+(sass|css|js)'
 const PAGES_GLOB = path.join(SRC_PATH, '**/index.html')
 
 // Get target chapter folders recursively
@@ -111,11 +114,28 @@ gulp.task('createHomepage', () =>
 
 gulp.task('build', ['page_js', 'page_sass', 'common_sass', 'common_js'])
 gulp.task('watch', () => {
-  gulp.watch(PAGE_JS_PATH, ['page_js'])
-  gulp.watch(PAGE_SASS_PATH, ['page_sass'])
-  gulp.watch(COMMON_SASS_PATH, ['common_sass'])
-  gulp.watch(COMMON_JS_PATH, ['common_js'])
-  gulp.watch(PAGES_GLOB, ['createHomepage', 'injectAssetsToPage'])
+  const assetChangedConfig = {read: false, readDelay: 500, event: ['change']}
+  const assetAddedDeletedConfig = {read: false, readDelay: 500, event: ['add', 'unlink']}
+  const pageChangedConfig = {read: false, readDelay: 500, event: ['add', 'unlink', 'change']}
+
+  watch(PAGE_JS_PATH, assetChangedConfig, batch((events, done) => {
+    gulp.start('page_js', done)
+  }))
+  watch(PAGE_SASS_PATH, assetChangedConfig, batch((events, done) => {
+    gulp.start('page_sass', done)
+  }))
+  watch(COMMON_SASS_PATH, assetChangedConfig, batch((events, done) => {
+    gulp.start('common_sass', done)
+  }))
+  watch(COMMON_JS_PATH, assetChangedConfig, batch((events, done) => {
+    gulp.start('common_js', done)
+  }))
+  watch(ALL_ASSETS_PATH, assetAddedDeletedConfig, batch((events, done) => {
+    gulp.start('injectAssetsToPage', done)
+  }))
+  watch(PAGES_GLOB, pageChangedConfig, batch((events, done) => {
+    gulp.start(['createHomepage', 'injectAssetsToPage'], done)
+  }))
 })
 
 gulp.task('default', ['build', 'createHomepage', 'injectAssetsToPage'])

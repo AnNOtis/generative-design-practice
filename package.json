@@ -1,5 +1,5 @@
 {
-  "name": "generative-art",
+  "name": "Generative Art Practice",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -7,8 +7,8 @@
     "test": "xo",
     "clean": "rimraf dist",
     "build": "yarn run clean && gulp",
-    "dev": "yarn run build && gulp watch",
-    "start": "serve dist",
+    "open": "open dist/index.html",
+    "start": "yarn run build && yarn run open; gulp watch",
     "deploy": "yarn run build && gh-pages -d dist"
   },
   "devDependencies": {
@@ -16,13 +16,14 @@
     "gh-pages": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
+    "gulp-batch": "^1.0.5",
     "gulp-concat": "^2.6.1",
     "gulp-inject": "^4.2.0",
     "gulp-insert": "^0.5.0",
     "gulp-sass": "^3.1.0",
+    "gulp-watch": "^4.3.11",
     "merge-stream": "^1.0.1",
     "rimraf": "^2.6.1",
-    "serve": "^5.1.5",
     "xo": "^0.18.2"
   },
   "xo": {
