@@ -9,7 +9,7 @@ const colorsLeft = new Array(tileCountY)
 const colorsRight = new Array(tileCountY)
 
 function setup() {
-  const cvs = createCanvas(300, 300)
+  const cvs = createCanvas(500, 500)
   cvs.parent('container')
   background(360)
   colorMode(HSB, 360, 100, 100)

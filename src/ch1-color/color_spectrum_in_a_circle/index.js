@@ -8,11 +8,12 @@ function setup() {
   cns.parent('container')
   frameRate(12)
   background(360)
+  noStroke()
 }
 
 function draw() {
   colorMode(HSB, 360, width, height)
-  background(360)
+  background('#FFF')
 
   const angleSegment = 360 / segmentCount
   const cx = width / 2
