@@ -1,6 +1,6 @@
 # Practice for Generative Design
 
-A playground integrates with [p5.js]. It is aim at practicing and experimenting concepts and topics of this wonderful book, [Generative Design].
+A playground integrates with [p5.js]. It is aim at practicing and experimenting concepts and topics from this wonderful book, [Generative Design].
 
 [p5.js]:https://p5js.org/
 [Generative Design]: http://www.generative-gestaltung.de/
@@ -17,9 +17,13 @@ yarn install
 ```
 
 Start:
-
 ```shell
 yarn run dev
 yarn start
 ```
 open in http://localhost:5000
+
+publish to github pages:
+```shell
+yarn run deploy
+```
