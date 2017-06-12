@@ -9,6 +9,7 @@ const merge = require('merge-stream')
 const concat = require('gulp-concat')
 const watch = require('gulp-watch')
 const batch = require('gulp-batch')
+const plumber = require('gulp-plumber')
 
 const SRC_PATH = path.join(__dirname, 'src')
 const DIST_PATH = path.join(__dirname, 'dist')
@@ -31,20 +32,24 @@ const getFolders = dir => {
 
 gulp.task('common_sass', () =>
   gulp.src(COMMON_SASS_PATH)
-    .pipe(sass())
+    .pipe(sass().on('error', sass.logError))
     .pipe(concat('common.css'))
     .pipe(gulp.dest(DIST_PATH))
 )
 
 gulp.task('common_js', () =>
   gulp.src(COMMON_JS_PATH)
+    .pipe(plumber())
     .pipe(concat('common.js'))
+    .pipe(plumber.stop())
     .pipe(gulp.dest(DIST_PATH))
 )
 
 gulp.task('page_js', () =>
   gulp.src(PAGE_JS_PATH, {base: SRC_PATH})
+    .pipe(plumber())
     .pipe(babel({presets: ['env']}))
+    .pipe(plumber.stop())
     .pipe(gulp.dest(DIST_PATH))
 )
 
@@ -132,12 +137,12 @@ gulp.task('watch', () => {
   watch(COMMON_JS_PATH, assetChangedConfig, batch((events, done) => {
     gulp.start('common_js', done)
   }))
-  watch(ALL_ASSETS_PATH, assetAddedDeletedConfig, batch((events, done) => {
-    gulp.start('injectAssetsToPage', done)
-  }))
-  watch(PAGES_GLOB, pageChangedConfig, batch((events, done) => {
-    gulp.start(['createHomepage', 'injectAssetsToPage'], done)
-  }))
+  // watch(ALL_ASSETS_PATH, assetAddedDeletedConfig, batch((events, done) => {
+  //   gulp.start('injectAssetsToPage', done)
+  // }))
+  // watch(PAGES_GLOB, pageChangedConfig, batch((events, done) => {
+  //   gulp.start(['createHomepage', 'injectAssetsToPage'], done)
+  // }))
 })
 
 gulp.task('default', ['build', 'copy', 'createHomepage', 'injectAssetsToPage'])
