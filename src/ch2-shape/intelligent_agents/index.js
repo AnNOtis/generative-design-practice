@@ -6,10 +6,9 @@ const SOUTH = 1
 const WEST = 2
 const NORTH = 3
 
-let noEnoughSpaceCount = 0
 let direction = EAST
 let angle
-let stepSize = 2
+let stepSize = 1
 let isReachBorder = false
 let posX = 0
 let posY = 0
@@ -28,22 +27,20 @@ function setup() {
 
 
 function draw() {
-  if (noEnoughSpaceCount === 100) return noLoop()
-
   const iteratedCount = constrain(mouseX, 10, width)
   for (var i = 0; i <= iteratedCount; i++) {
     posX += cos(radians(angle)) * stepSize
     posY += sin(radians(angle)) * stepSize
-    if (posX > (width - 5)) {
+    if (posX > width) {
       direction = WEST
       isReachBorder = true
-    } else if (posX < 5) {
+    } else if (posX < 0) {
       direction = EAST
       isReachBorder = true
-    } else if (posY > (height - 5)) {
+    } else if (posY > height) {
       direction = NORTH
       isReachBorder = true
-    } else if (posY < 5) {
+    } else if (posY < 0) {
       direction = SOUTH
       isReachBorder = true
     }
@@ -56,11 +53,20 @@ function draw() {
       const distance = dist(posX, posY, prePosX, prePosY)
 
       if (distance >= minLength) {
+        stroke(50)
+
         strokeWeight(map(distance, 0, maxDist, 1, 20))
-        stroke(0)
+        if (distance > 300) {
+          strokeWeight(20)
+        } else if(distance > 200) {
+          strokeWeight(10)
+        } else if(distance > 60) {
+          strokeWeight(4)
+        } else {
+          strokeWeight(1)
+        }
+
         line(posX, posY, prePosX, prePosY)
-      } else {
-        noEnoughSpaceCount +=1
       }
 
       prePosX = posX
