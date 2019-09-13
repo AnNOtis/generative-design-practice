@@ -21,8 +21,8 @@ function draw() {
   const tileHeight = height / tileCountY
 
   let counter = 0
-  for(let row=0; row<tileCountY; row+=1) {
-    for(let column=0; column<colorSetCount; column+=1) {
+  for (let row = 0; row < tileCountY; row += 1) {
+    for (let column = 0; column < colorSetCount; column += 1) {
       const colorIndex = counter % tileCountX
       fill(
         hueColors[colorIndex],
@@ -31,7 +31,7 @@ function draw() {
       )
 
       rect(column * tileWidth, row * tileHeight, tileWidth, tileHeight)
-      counter+=1
+      counter += 1
     }
   }
 }
@@ -41,7 +41,7 @@ function keyReleased() {
 }
 
 function changeColorMode(mode) {
-  switch(Number(mode)) {
+  switch (Number(mode)) {
     case 1:
       // all
       generateColors(
