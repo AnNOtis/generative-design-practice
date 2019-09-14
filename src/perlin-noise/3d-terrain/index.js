@@ -16,7 +16,7 @@ function setup() {
   createSpan("height:")
   heightSlider = createSlider(1, 10, 3, 0.1);
   createSpan("Rotate:")
-  rotateSlider = createSlider(0, 90, 40);
+  rotateSlider = createSlider(0, 90, 50);
   scl = 20
 
   // noiseDetail(10, 0.65)
@@ -44,13 +44,13 @@ function draw() {
   }
 
   background(0)
-  noFill()
   noStroke()
   push()
-  translate(-width / 2, -height / 3)
+  translate(-width / 2, -height / 3, 100)
   for (let y = 0; y < rows - 1; y++) {
-    strokeWeight(map(y / rows, 0, 1, 1, 1.5))
-    stroke(200, (y / rows) * 100)
+    const alpha = (y / rows) * 100
+    fill(255, map(alpha, 0, 100, 0, 50))
+    stroke(200, alpha)
     beginShape(TRIANGLE_STRIP)
     for (let x = 0; x < cols; x++) {
       vertex(x * scl, y * scl, noises[y][x])
