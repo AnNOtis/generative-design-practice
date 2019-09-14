@@ -9,5 +9,10 @@
     "p5js/dom",
     "p5js/sound",
     "prettier"
-  ]
+  ],
+  "rules": {
+    "no-unused-vars": ["error", {
+      "varsIgnorePattern": "(setup)|(draw)"
+    }]
+  }
 }
