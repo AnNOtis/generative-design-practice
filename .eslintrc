@@ -1,4 +1,7 @@
 {
+  "globals": {
+    "circle": true
+  },
   "env": {
     "browser": true,
     "es6": true
@@ -12,7 +15,7 @@
   ],
   "rules": {
     "no-unused-vars": ["error", {
-      "varsIgnorePattern": "(setup)|(draw)"
+      "varsIgnorePattern": "(setup)|(draw)|(mousePressed)"
     }]
   }
 }

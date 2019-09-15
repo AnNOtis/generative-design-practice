@@ -70,6 +70,7 @@ function draw() {
     for (let y = 1; y < rows; y++) {
       for (let x = 1; x < cols; x++) {
         curves[y][x].reset()
+        angle = -90
       }
     }
   }
@@ -84,11 +85,11 @@ function Curve() {
   }
 
   this.show = function () {
-    this.paths.forEach((path, index) => {
-      const prev = this.paths[index - 1]
-      if (!prev) return
-      line(prev.x, prev.y, path.x, path.y)
+    beginShape();
+    this.paths.forEach((path) => {
+      vertex(path.x, path.y);
     })
+    endShape();
 
     if (!isGuided) return
     const lastPath = this.paths[this.paths.length - 1]
