@@ -41,9 +41,7 @@ function draw() {
       const scl = 0.01
       const r = 0.5
       const yoff = noise(
-        100 * y + scl * x + t,
-        r * cos(TWO_PI * t + i / 10),
-        r * sin(TWO_PI * t + i / 10)
+        100 * y + scl * x + t
       ) * intense * 500
       vertex(x, y - yoff)
     }
@@ -51,5 +49,5 @@ function draw() {
     endShape()
   }
 
-  t += 0.03
+  t += 0.08
 }
