@@ -56,6 +56,9 @@ class Dot {
   }
 
   draw() {
+    if (this.deadCount > 4) {
+      return
+    }
     if (
       dist(width / 2, height / 2, this.pos.x, this.pos.y) > this.radius ||
       dist(width / 2, height / 2, this.prev.x, this.prev.y) > this.radius
