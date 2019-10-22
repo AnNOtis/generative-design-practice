@@ -1,29 +1,37 @@
 const dots = []
-const factor = 0.008
-const count = 2000
-const size = innerWidth < 500 ? innerWidth - 10 : 500
+// const factor = 0.008
+const factor = 0.01
+const count = 4000
+const size = Math.min(innerWidth * 0.8, 500)
 const radius = size * 0.8 / 2
+const paintDistance = 2
 
 function setup() {
   createCanvas(size, size);
   background(255);
+  // noiseSeed(24);
+  // noiseSeed(37);
+  // noiseSeed(37);
   noiseDetail(2)
   colorMode(HSB, 100)
-  strokeWeight(2)
-  stroke(0)
-  noFill()
-  ellipse(width / 2, height / 2, radius * 2 + 1)
+  // strokeWeight(2)
+  // stroke(0)
+  // fill(13, 10, 100)
+  // ellipse(width / 2, height / 2, radius * 2 + 1)
 
   for (let i = 0; i < count; i++) {
-    dots.push(new Dot(radius, [60, 80], 20, 5))
+    if (i < count * 0.996) {
+      dots.push(new Dot(radius, [55, 80], 20, 5))
+    } else {
+      dots.push(new Dot(radius, [10, 20], 100, 70))
+    }
   }
 }
 
 function draw() {
   for (let i = 0; i < dots.length; i++) {
     const dot = dots[i]
-    n = noise(dot.pos.x * factor, dot.pos.y * factor)
-    dot.update(n)
+    dot.update()
     dot.draw()
   }
 }
@@ -43,10 +51,16 @@ class Dot {
     this.brightness = brightness
   }
 
-  update(noize) {
+  update() {
+    const noize = noise(this.pos.x * factor, this.pos.y * factor)
     this.v = p5.Vector.fromAngle(noize * TWO_PI + (this.deadCount * PI))
-    this.v.setMag(2)
-    this.color = color(map(noize, 0, 1, ...this.colorRange), 100, this.brightness, this.alpha)
+    this.v.setMag(paintDistance)
+    this.color = color(
+      map(noize, 0, 1, ...this.colorRange),
+      100,
+      this.brightness,
+      this.alpha
+    )
     this.prev = this.pos.copy()
     this.pos = this.pos.add(this.v)
 
