@@ -1,8 +1,8 @@
 const dots = []
 // const factor = 0.008
 const factor = 0.01
-const count = 4000
 const size = Math.min(innerWidth * 0.8, 500)
+const count = size * 6
 const radius = size * 0.8 / 2
 const paintDistance = 2
 
@@ -23,7 +23,7 @@ function setup() {
     if (i < count * 0.996) {
       dots.push(new Dot(radius, [55, 80], 20, 5))
     } else {
-      dots.push(new Dot(radius, [10, 20], 100, 70))
+      dots.push(new Dot(radius, [10, 20], 100, 60))
     }
   }
 }
@@ -83,5 +83,11 @@ class Dot {
     strokeWeight(1)
     stroke(this.color)
     line(this.prev.x, this.prev.y, this.pos.x, this.pos.y)
+  }
+}
+
+function keyPressed() {
+  if (keyCode === DOWN_ARROW) {
+    save('pic.jpg')
   }
 }
